@@ -5,6 +5,15 @@ project(find-pi-to-the-nth-digit) # project name (optional version)
 set(CMAKE_CXX_STANDARD 17) # setting which c++ std to use
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Optimizations
+if(CMAKE_BUILD_TYPE MATCHES Release)
+    message(STATUS "Release mode: Applying optimization flags")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+elseif(CMAKE_BUILD_TYPE MATCHES Debug)
+    message(STATUS "Debug mode: No optimization flags applied")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -g")
+endif()
+
 # find_package(GMP REQUIRED) # find the GMP library and if not found through error
 # Manually specify the GMP include and library paths
 set(GMP_INCLUDE_DIR "/usr/local/include")
@@ -18,9 +27,10 @@ link_directories(${GMP_LIB_DIR})
 # Find the GMP and GMPXX libraries manually
 find_library(GMP_LIBRARY gmp HINTS ${GMP_LIB_DIR})
 find_library(GMPXX_LIBRARY gmpxx HINTS ${GMP_LIB_DIR})
+find_library(MPFR_LIBRARY mpfr)
 
 file(GLOB SOURCES "src/*.cpp") # adding source files to SOURCES variable
 
 add_executable(main ${SOURCES}) # adding name of executable and .cpp files
 
-target_link_libraries(main ${GMP_LIBRARY} ${GMPXX_LIBRARY})
+target_link_libraries(main ${GMP_LIBRARY} ${GMPXX_LIBRARY} ${MPFR_LIBRARY})
